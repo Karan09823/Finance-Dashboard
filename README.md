@@ -90,8 +90,8 @@ This model enables seamless data slicing by time, customer, and loan attributes.
 - **Female customers** outnumber male and other gender groups.  
 
 ### 💰 Loan Portfolio Overview  
-- **Total Loan Amount:** ₹253M  
-- **Average Monthly Installment:** ₹2.11K  
+- **Total Loan Amount:** $253M  
+- **Average Monthly Installment:** $2.11K  
 - **Average Interest Rate:** 8.97% (Min: 3%, Max: 15%)  
 - **Most common loan types:** Student → Auto → Mortgage → Personal → Small Business  
 
