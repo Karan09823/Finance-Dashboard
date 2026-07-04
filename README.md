@@ -99,7 +99,8 @@ This star-schema model enables slicing by time, customer attributes, and loan at
 - Credit Score by Gender & Education shows customers identifying as **"Other"** gender consistently post the **highest credit scores across every education level** (e.g., 616.28 for Doctorate holders vs. 601.26 for Female Doctorate holders) — worth investigating whether this reflects a smaller, more homogenous sample rather than a true behavioral signal
 - Within each gender group, credit score does **not** scale linearly with education — High School-educated customers slightly outscore Postgraduates in the Male segment, suggesting credit score here is driven more by income/repayment behavior than by education level alone
 
-![Customer Demographics](images/customer_demographics.png)
+<img width="1331" height="746" alt="image" src="https://github.com/user-attachments/assets/3f9b8340-761f-4933-bcdb-7e9997fc0b2f" />
+
 
 ### 2️⃣ Loan Portfolio & Performance
 **KPIs:** Total Loan Amount, Average Monthly Installment, Average Interest Rate
@@ -109,7 +110,8 @@ This star-schema model enables slicing by time, customer attributes, and loan at
 - All five loan types show a similar Active/Closed/Defaulted split, meaning default risk is a **portfolio-wide issue rather than isolated to one loan category**
 - Individual active and defaulted loan records (both in the $97K–$99K+ range) suggest the dataset skews toward large-ticket loans, which raises the stakes of the default rate below
 
-![Loan Portfolio & Performance](images/loan_portfolio_performance.png)
+<img width="1252" height="740" alt="image" src="https://github.com/user-attachments/assets/72c80835-8d99-4561-89cd-e25168e0dee8" />
+
 
 ### 3️⃣ Financial Risk Analysis
 **KPIs:** Defaulted Loans, Defaulted Loan Amount, High-Risk Loans, High-Risk Loan Amount
@@ -120,7 +122,8 @@ This star-schema model enables slicing by time, customer attributes, and loan at
 - Credit Score vs. Customers distribution shows customer volume is heavily concentrated in the **"Good"** and **"Very Good"** bands, with far fewer customers in "Excellent" — meaning most of the portfolio sits in a mid-tier risk zone rather than at either extreme
 - High-risk loan amount ($127.97M) is roughly **5x** the defaulted loan amount ($26.19M) — a large pool of loans is currently flagged as risky but hasn't defaulted yet, representing the biggest lever for proactive intervention
 
-![Financial Risk Analysis](images/financial_risk_analysis.png)
+<img width="1337" height="745" alt="image" src="https://github.com/user-attachments/assets/0d0a1166-6db5-400e-8424-7cb3d93ec98e" />
+
 
 ---
 
@@ -158,9 +161,6 @@ Finance-Dashboard/
     ├── loan_portfolio_performance.png
     └── financial_risk_analysis.png
 ```
-
-> ⚠️ **Setup note:** Create an `images/` folder in this repo and add the three dashboard screenshots with the filenames above. The previous version of this README linked images through GitHub's temporary signed URLs, which expire within minutes — moving them to a proper folder with relative paths makes them permanent.
-
 ---
 
 ## 🚀 How to Use
@@ -183,4 +183,3 @@ Finance-Dashboard/
 
 **Karan Kumar Sahu**
 Data Analyst | SQL · Python · Power BI
-[LinkedIn](#) · [GitHub](https://github.com/Karan09823) · [Portfolio](#)
