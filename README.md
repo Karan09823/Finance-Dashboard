@@ -70,68 +70,77 @@ This star-schema model enables slicing by time, customer attributes, and loan at
 
 ---
 
-## 🧮 KPI Development (DAX Measures)
+## 🧮 KPI Development (Core DAX Measures)
 
-| KPI | DAX Formula |
-|---|---|
-| Average Age | `AVERAGE(Customer_Details[Age])` |
-| Average Income | `AVERAGE(Customer_Details[Income])` |
-| Average Interest Rate | `AVERAGE(Loan_Details[Interest_Rate])` |
-| Average Monthly Installment | `AVERAGE(Loan_Details[Monthly_Installment])` |
-| Total Customers | `COUNTA(Customer_Details[Customer_ID])` |
-| Total Loan Amount | `SUM(Loan_Details[Loan_Amount])` |
-| Defaulted Loan Amount | `CALCULATE(SUM(Loan_Details[Loan_Amount]), FILTER(Loan_Details, Loan_Details[Status] = "Defaulted"))` |
-| Defaulted Loans | `CALCULATE(COUNTROWS(Loan_Details), Loan_Details[Status] = "Defaulted")` |
-| High Risk Loan Amount | `CALCULATE(SUM(Loan_Details[Loan_Amount]), FILTER(Customer_Details, Customer_Details[Risk Category] = "High Risk"))` |
-| High Risk Loans | `CALCULATE(COUNTROWS(Loan_Details), Customer_Details[Risk Category] = "High Risk")` |
-| Loan Status Count | `COUNTROWS(Loan_Details)` |
+```DAX
+Default Rate % = 
+DIVIDE([Defaulted Loan Amount], [Total Loan Amount], 0)
+
+High Risk Exposure % = 
+DIVIDE([High Risk Loan Amount], [Total Loan Amount], 0)
+
+Total Customers = DISTINCTCOUNT(Customer_Details[Customer_ID])
 
 ---
 
 ## 📈 Dashboard Pages & Key Insights
 
-### 1️⃣ Customer Demographics
-**KPIs:** Total Customers, Average Income, Average Age
+1️⃣ Customer Demographics
+KPIs: Total Customers, Average Income, Average Age
 
-- **1,155** total customers | **$76.62K** average income | **44.06** average age
-- Education split is fairly even across tiers: Graduate (27.97%), Postgraduate (24.76%), High School (26.84%), Doctorate (20.43%) — no single education level dominates the customer base
-- Gender split: Male (42.77%), Female (40.87%), Other (16.36%)
-- Credit Score by Gender & Education shows customers identifying as **"Other"** gender consistently post the **highest credit scores across every education level** (e.g., 616.28 for Doctorate holders vs. 601.26 for Female Doctorate holders) — worth investigating whether this reflects a smaller, more homogenous sample rather than a true behavioral signal
-- Within each gender group, credit score does **not** scale linearly with education — High School-educated customers slightly outscore Postgraduates in the Male segment, suggesting credit score here is driven more by income/repayment behavior than by education level alone
+Portfolio Base: 1,155 total customers | $76.62K average income | 44.06 average age.
+
+Credit Score Anomalies: Credit score does not scale linearly with education. High School-educated customers slightly outscore Postgraduates in the Male segment, suggesting credit health is driven more by historical repayment behavior/income than by educational attainment alone.
 
 <img width="1331" height="746" alt="image" src="https://github.com/user-attachments/assets/3f9b8340-761f-4933-bcdb-7e9997fc0b2f" />
 
 
-### 2️⃣ Loan Portfolio & Performance
-**KPIs:** Total Loan Amount, Average Monthly Installment, Average Interest Rate
+2️⃣ Loan Portfolio & Performance
+KPIs: Total Loan Amount, Average Monthly Installment, Average Interest Rate
 
-- **$253M** total loan amount | **$2.11K** average monthly installment | **8.97%** average interest rate (range: 3.01%–15.00%)
-- Loan portfolio is well-diversified by design: Personal (20.58%), Mortgage (20.22%), Small Business (20.14%), Auto (19.74%), Student (19.32%) — no single loan type creates concentration risk
-- All five loan types show a similar Active/Closed/Defaulted split, meaning default risk is a **portfolio-wide issue rather than isolated to one loan category**
-- Individual active and defaulted loan records (both in the $97K–$99K+ range) suggest the dataset skews toward large-ticket loans, which raises the stakes of the default rate below
+Diversification: The $253M portfolio is exceptionally well-diversified. Personal, Mortgage, Small Business, Auto, and Student loans each account for roughly 19%–20% of the total book, preventing heavy concentration risk in any single asset class.
+
+Systemic Risk: All five loan types show a similar Active/Closed/Defaulted split, proving that default risk is a portfolio-wide issue rather than an isolated product failure.
+
+Ticket Size: A significant skew toward large-ticket loans ($97K–$99K+) raises the financial stakes of the default rate
 
 <img width="1252" height="740" alt="image" src="https://github.com/user-attachments/assets/72c80835-8d99-4561-89cd-e25168e0dee8" />
 
 
-### 3️⃣ Financial Risk Analysis
-**KPIs:** Defaulted Loans, Defaulted Loan Amount, High-Risk Loans, High-Risk Loan Amount
+3️⃣ Financial Risk Analysis
+KPIs: Default Rate (%), High-Risk Exposure (%), Defaulted Loan Amount, High-Risk Loan Amount
 
-- **519** defaulted loans totaling **$26.19M** | **2,547** high-risk loans totaling **$127.97M**
-- Defaults by employment status: Full-time (27.95%), Unemployed (25.94%), Part-time (24.3%), Self-employed (21.81%) — **full-time employment is not a strong safeguard against default**, which challenges an assumption often built into simple underwriting rules
-- High-risk loan exposure follows a similar pattern: Full-time (27.19%), Unemployed (25.87%), Self-employed (23.21%), Part-time (23.74%) — risk is spread broadly across employment categories rather than concentrated in the "obvious" segments (unemployed/self-employed)
-- Credit Score vs. Customers distribution shows customer volume is heavily concentrated in the **"Good"** and **"Very Good"** bands, with far fewer customers in "Excellent" — meaning most of the portfolio sits in a mid-tier risk zone rather than at either extreme
-- High-risk loan amount ($127.97M) is roughly **5x** the defaulted loan amount ($26.19M) — a large pool of loans is currently flagged as risky but hasn't defaulted yet, representing the biggest lever for proactive intervention
+The Exposure Gap: The overall Default Rate sits at 10.35% ($26.19M), while High-Risk Exposure is an alarming 50.5% ($127.97M). The high-risk pipeline is roughly 5x larger than the defaulted pool, presenting a massive window for proactive intervention before these loans convert to bad debt.
+
+The Employment Risk Myth: While Full-Time employees account for the highest raw volume of defaults, a cohort-level analysis reveals the actual Default Rate is distributed relatively evenly across employment types. This challenges legacy assumptions: full-time employment alone does not significantly insulate a loan from default.
+
+Credit Score Density: Customer volume is heavily concentrated in the "Good" and "Very Good" credit bands, with far fewer customers in "Excellent." Because the portfolio sits heavily in this mid-tier risk zone, tightening underwriting criteria even slightly at the lower boundary of "Good" could drastically reduce the $127M high-risk exposure.
 
 <img width="1337" height="745" alt="image" src="https://github.com/user-attachments/assets/0d0a1166-6db5-400e-8424-7cb3d93ec98e" />
 
+4️⃣ Trend Analysis (Time Intelligence)KPIs: Origination Volume Trend, Default Rate TrendOrigination Trajectory: Loan originations experienced massive expansion between 2018 and 2020, reaching peak highs of $5.1M in early 2019. Moving into 2022–2024, origination volume has stabilized to a more consistent run rate, hovering between $2.6M and $4.4M per period.   Risk Cyclicality & Correlation: The default rate is highly volatile, experiencing severe spikes (peaking at a massive 21.85% in mid-2019) and sharp troughs (dropping to 0.92% in 2021). Crucially, the massive 21.85% default spike closely followed the portfolio's most aggressive $5.1M expansion period. This indicates that rapid scaling historically compromised underwriting quality.
+
+<img width="1220" height="710" alt="image" src="https://github.com/user-attachments/assets/dc8179b7-64c3-4a70-8189-9ec9d1f23f27" />
+
 
 ---
 
-## 🧠 Conclusion
+💡 Strategic Recommendations
+Shift Focus to Proactive Intervention: With $127M flagged as high-risk (5x the defaulted amount), the underwriting strategy must shift from purely reactive ("which segment do we avoid") to proactive ("how do we restructure high-risk loans before they default").
 
-The Finance Dashboard provides a unified, data-driven view of the company's lending landscape. By combining a clean data model with targeted DAX measures, it surfaces where risk actually concentrates — which turns out to be less about employment status or education level than commonly assumed, and more evenly distributed across the customer base. This reframes the underwriting question from "which segment do we avoid" to "how do we catch high-risk loans before they convert to defaults," since the high-risk pool is roughly 5x larger than the current default pool.
+Tighten Mid-Tier Underwriting: Customer volume is heavily concentrated in the "Good" and "Very Good" credit bands. Tightening underwriting criteria even slightly at the lower boundary of "Good" could drastically reduce future high-risk exposure without suffocating overall loan volume.
+
+Revamp Employment Weighting: Since Full-Time employment does not mathematically prevent defaults better than other statuses, the risk-scoring model should decrease the weight of employment type and increase the weight of historical repayment ratios.
+
+Controlled Scaling: Historical trend analysis proves that rapid origination spikes directly preceded the worst default periods. Future growth initiatives must be paired with strict risk-tolerance caps to prevent a repeat of the 2019 default surge.
 
 ---
+🔮 Future Improvements
+Debt-to-Income (DTI) Analytics: Engineer a DTI ratio measure ([Monthly Installment] * 12 / [Income]) to identify the exact tipping point where loans become too expensive for customers to maintain.
+
+"What-If" Scenario Modeling: Implement Power BI's What-If parameters to create a "Default Rate Stress Test" slider, allowing stakeholders to dynamically project financial losses under changing economic conditions.
+
+Net Profitability Tracking: Calculate total expected interest revenue over the lifespan of active loans and compare it against the defaulted loan amount to track true unit economics (Revenue vs. Risk).
 
 ## 🧠 Skills Demonstrated
 
@@ -139,12 +148,10 @@ The Finance Dashboard provides a unified, data-driven view of the company's lend
 
 ---
 
-## 🛠️ Tools & Technologies
+🛠️ Tech Stack & Skills Demonstrated
+Tools: Power BI Desktop, Power Query, Excel / CSV
 
-- Power BI Desktop
-- DAX (Data Analysis Expressions)
-- Power Query
-- Excel / CSV Data Source
+Skills: Time Intelligence Analytics, Relational Data Modeling, DAX, Credit Risk Analysis, Portfolio Segmentation, Executive Dashboard Design
 
 ---
 
@@ -163,21 +170,7 @@ Finance-Dashboard/
 ```
 ---
 
-## 🚀 How to Use
 
-1. Clone this repository
-2. Open `Financial_Dashboard.pbix` in Power BI Desktop
-3. Use the **Income & Credit Score / Income & Credit Score Categories / Income & Credit Score Segments** slicers on each page to explore how risk and demographics shift across income and credit bands
-
----
-
-## 🔮 Future Improvements
-
-- Build a logistic regression or scorecard model to predict default probability, then compare its output against the current "High Risk" tagging logic
-- Add a cohort view tracking loans by issue-date vintage to see whether default rates are worsening or improving over time
-- Break down the "Other" gender segment's high credit scores by sample size to confirm whether the pattern holds at scale
-
----
 
 ## 👤 Author
 
